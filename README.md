@@ -3,7 +3,7 @@
 An open web-based augmented reality (WebAR) learning environment for recurrence analysis of financial market crashes.
 Students explore three-dimensional phase-space trajectories, stacks of recurrence plots and recurrence quantification surfaces of real crashes on the S&P 500, Brent crude oil and BTC-USD markets, on their own smartphones and without installing an application.
 
-**Live demo:** https://butman2099.github.io/ar-recurrence-lab/
+**Live demo:** https://butman2099.github.io/AR-Recurrence-Lab/
 
 The environment accompanies the paper *AR Recurrence Lab: an augmented reality learning environment for recognising financial market crashes with recurrence quantification analysis* (A. O. Bielinskyi, V. N. Soloviev, A. V. Matviychuk, V. V. Solovieva), submitted to AREdu 2026.
 
