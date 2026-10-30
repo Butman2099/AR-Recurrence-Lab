@@ -7,7 +7,7 @@ Students explore three-dimensional phase-space trajectories, stacks of recurrenc
 
 It extends the laboratory work on recurrence analysis of the open textbook *Modeling Complex Systems in Python* (V. N. Soloviev, A. O. Bielinskyi; [online version](https://butman2099.github.io/Complex-systems-book/), [notebooks and sources](https://github.com/Butman2099/Complex-systems-book)).
 
-The environment accompanies the paper *AR Recurrence Lab: an augmented reality learning environment for recognising financial market crashes with recurrence quantification analysis* (A. O. Bielinskyi, V. N. Soloviev, A. V. Matviychuk, V. V. Solovieva), submitted to AREdu 2026.
+The environment accompanies the paper *AR Recurrence Lab: an augmented reality learning environment for recognising financial market crashes with recurrence quantification analysis* (A. O. Bielinskyi, V. N. Soloviev, A. V. Matviychuk, V. V. Solovieva, Y. I. Strilchuk, M. A. Tepliuk, V. S. Bezkorovainyi), submitted to AREdu 2026.
 
 ## Learning objects
 
