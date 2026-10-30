@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AR Recurrence Lab</title>
+<script type="module" src="vendor/model-viewer.min.js"></script>
+<style>
+:root{--bg:#fcfcfb;--card:#ffffff;--ink:#0b0b0b;--ink2:#52514e;--line:#e4e3df;--accent:#2a78d6;--acc2:#eb6834;--acc3:#199e70}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);line-height:1.4}
+header{padding:14px 16px 8px;border-bottom:1px solid var(--line);background:var(--card)}
+h1{font-size:1.15rem;margin:0}
+.sub{color:var(--ink2);font-size:.85rem;margin:2px 0 8px}
+nav{display:flex;gap:6px;overflow-x:auto}
+nav button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 12px;font-size:.85rem;cursor:pointer;white-space:nowrap;color:var(--ink)}
+nav button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+main{max-width:1100px;margin:0 auto;padding:12px 16px 40px}
+section{display:none}section.on{display:block}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 12px}
+select,input[type=range]{font-size:.9rem}
+select{padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.card h3{font-size:.9rem;margin:8px 10px 0}
+.card p{font-size:.75rem;color:var(--ink2);margin:2px 10px 8px}
+model-viewer{width:100%;height:260px;background:linear-gradient(#ffffff,#f3f2ef);--poster-color:transparent}
+model-viewer.big{height:420px}
+model-viewer::part(default-progress-bar){display:none}
+.arbtn{position:absolute;right:8px;bottom:8px;border:0;border-radius:999px;background:var(--ink);color:#fff;padding:6px 12px;font-size:.8rem}
+.note{font-size:.85rem;color:var(--ink2);max-width:760px}
+.scrub{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+.scrub .side{grid-column:1/-1}
+@media (max-width:760px){.scrub{grid-template-columns:1fr}}
+@media (min-width:1200px){.scrub{grid-template-columns:1fr 1fr 1.5fr}.scrub .side{grid-column:auto}}
+.scrub model-viewer{height:auto;aspect-ratio:1}
+.rp{width:100%;aspect-ratio:1;image-rendering:pixelated;border:1px solid var(--line);border-radius:8px;background:#fff}
+canvas{width:100%;height:220px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.poe{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:12px}
+.poe b{display:inline-block;min-width:68px}
+.legend{font-size:.75rem;color:var(--ink2)}
+.legend span{display:inline-block;width:18px;height:3px;vertical-align:middle;margin:0 4px 0 10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>AR Recurrence Lab</h1>
+  <div class="sub">Phase-space trajectories, recurrence plots and recurrence quantification of real market crashes</div>
+  <nav>
+    <button data-tab="gallery" class="on">1 · Attractor gallery</button>
+    <button data-tab="tunnel">2 · Recurrence tunnel</button>
+    <button data-tab="landscape">3 · RQA landscape</button>
+    <button data-tab="scrub">4 · Time slider</button>
+  </nav>
+</header>
+<main>
+<section id="gallery" class="on">
+  <p class="note">Each object is the trajectory of a 3D delay embedding x(t), x(t+τ), x(t+2τ) of window-standardised prices (τ = 9, 10 and 5 trading days for the S&amp;P 500, Brent and BTC-USD). Colour runs from light (start of the window) to dark (end of the window). Tap <i>View in AR</i> to place the object on your desk and walk around it.</p>
+  <div class="row"><label>Event <select id="gEvent"></select></label></div>
+  <div class="grid" id="gGrid"></div>
+  <h2 style="font-size:1rem;margin-top:22px">Reference systems</h2>
+  <div class="grid" id="gRef"></div>
+</section>
+<section id="tunnel">
+  <p class="note">Twelve recurrence plots computed for successive positions of the sliding window, stacked from the early pre-crash window (front, light) to the crash window (back, dark). Look through the stack to see how the texture changes as the crash approaches.</p>
+  <div class="row"><label>Event <select id="tEvent"></select></label></div>
+  <div class="card" style="position:relative"><model-viewer id="tMV" class="big" camera-controls ar ar-modes="webxr scene-viewer quick-look" shadow-intensity="0.4" camera-orbit="35deg 70deg auto" alt="Stack of recurrence plots"><button slot="ar-button" class="arbtn">View in AR</button></model-viewer></div>
+  <p class="note" id="tInfo"></p>
+</section>
+<section id="landscape">
+  <p class="note">Surface of determinism DET as a function of time (left to right, January 2017 – December 2018) and recurrence threshold ε (front to back, 0.02–0.40) for BTC-USD. Height and colour show DET. The orange plane marks the price peak of 16 December 2017.</p>
+  <div class="card" style="position:relative"><model-viewer id="lMV" class="big" src="models/BT17_landscape.glb" camera-controls ar ar-modes="webxr scene-viewer quick-look" shadow-intensity="0.4" camera-orbit="-25deg 60deg auto" alt="DET landscape"><button slot="ar-button" class="arbtn">View in AR</button></model-viewer></div>
+</section>
+<section id="scrub">
+  <div class="row"><label>Event <select id="sEvent"></select></label>
+    <label style="flex:1;min-width:220px">Window position <input id="sRange" type="range" min="0" max="15" value="0" style="width:100%"></label>
+    <span id="sDate" class="legend"></span></div>
+  <div class="scrub">
+    <div class="card" style="position:relative"><model-viewer id="sMV" camera-controls ar ar-modes="webxr scene-viewer quick-look" shadow-intensity="0.4" interaction-prompt="none" alt="Phase-space trajectory"><button slot="ar-button" class="arbtn">View in AR</button></model-viewer></div>
+    <div><img id="sRP" class="rp" alt="Recurrence plot of the current window"></div>
+    <div class="side">
+  <canvas id="sChart" width="1000" height="260"></canvas>
+  <div class="legend"><span style="background:#0b0b0b"></span>price (rescaled) <span style="background:#2a78d6"></span>DET <span style="background:#eb6834"></span>LAM · grey band: current window · solid line: window end</div>
+  <div class="poe">
+    <div><b>Predict</b> Before moving the slider: will the trajectory become more elongated or more tangled, and will DET rise or fall?</div>
+    <div><b>Observe</b> Move the slider one step and compare the trajectory, the recurrence plot and the curves.</div>
+    <div><b>Explain</b> Which visual element of the recurrence plot (diagonal lines, vertical lines, blocks, white bands) changed, and which measure reflects it?</div>
+  </div>
+    </div>
+  </div>
+</section>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===b.dataset.tab));});
+const POS=[["calm","Calm"],["early","Early pre-crash"],["late","Late pre-crash"],["crash","Crash"]];
+const REF=[["lorenz","Lorenz system","chaotic, deterministic"],["rossler","Rössler system","chaotic, deterministic"],["randomwalk","Random walk","stochastic, no attractor"]];
+function mv(src,alt){return `<model-viewer src="${src}" loading="lazy" camera-controls auto-rotate rotation-per-second="18deg" ar ar-modes="webxr scene-viewer quick-look" shadow-intensity="0.5" interaction-prompt="none" camera-orbit="40deg 70deg 0.78m" alt="${alt}"><button slot="ar-button" class="arbtn">View in AR</button></model-viewer>`}
+fetch('data/meta.json').then(r=>r.json()).then(M=>{
+  const ids=Object.keys(M.scrub);
+  for(const sel of ['#gEvent','#tEvent','#sEvent']){$(sel).innerHTML=ids.map(i=>`<option value="${i}">${M.scrub[i].asset} — ${M.scrub[i].label} (${i})</option>`).join('');}
+  const gal=Object.fromEntries(M.gallery.map(g=>[g.id,g]));
+  function drawGallery(){const id=$('#gEvent').value;$('#gGrid').innerHTML=POS.map(([k,l])=>{const g=gal[id+'_'+k];return `<div class="card" style="position:relative"><h3>${l}</h3><p>${g.start} – ${g.end}</p>${mv(g.file,l)}</div>`}).join('');}
+  $('#gRef').innerHTML=REF.map(([k,l,d])=>`<div class="card" style="position:relative"><h3>${l}</h3><p>${d}</p>${mv(gal[k].file,l)}</div>`).join('');
+  $('#gEvent').onchange=drawGallery;drawGallery();
+  function drawTunnel(){const t=M.tunnel[$('#tEvent').value];$('#tMV').src=t.file;$('#tInfo').textContent='Window end dates, front to back: '+t.ends.join(', ');}
+  $('#tEvent').onchange=drawTunnel;drawTunnel();
+  const cv=$('#sChart'),cx=cv.getContext('2d');
+  function drawScrub(){const S=M.scrub[$('#sEvent').value];const j=+$('#sRange').value;const f=S.frames[j];
+    $('#sMV').src=f.glb;$('#sRP').src=f.rp;$('#sDate').textContent=`window ${f.start} – ${f.end}`;
+    const d=S.series.dates,n=d.length,W=cv.width,H=cv.height,pad=30;cx.clearRect(0,0,W,H);
+    const xi=i=>pad+(W-2*pad)*i/(n-1);const i0=Math.max(0,d.indexOf(f.start)),i1=d.indexOf(f.end);
+    cx.fillStyle='#e4e3df';cx.fillRect(xi(i0>=0?i0:0),8,xi(i1)-xi(i0>=0?i0:0),H-16);
+    const p=S.series.price,lp=p,mn=Math.min(...lp),mx=Math.max(...lp);
+    const line=(arr,col,map)=>{cx.strokeStyle=col;cx.lineWidth=2.5;cx.beginPath();arr.forEach((v,i)=>{const y=map(v);i?cx.lineTo(xi(i),y):cx.moveTo(xi(i),y)});cx.stroke();};
+    line(lp,'#0b0b0b',v=>H-pad-(H-2*pad)*(v-mn)/(mx-mn||1));
+    line(S.series.DET,'#2a78d6',v=>H-pad-(H-2*pad)*v);line(S.series.LAM,'#eb6834',v=>H-pad-(H-2*pad)*v);
+    for(const [dt,lab] of [[S.peak,'peak'],[S.trough,'trough']]){const k=d.indexOf(dt);if(k>=0){cx.strokeStyle='#52514e';cx.setLineDash([6,5]);cx.lineWidth=1.5;cx.beginPath();cx.moveTo(xi(k),8);cx.lineTo(xi(k),H-8);cx.stroke();cx.setLineDash([]);cx.fillStyle='#52514e';cx.font='22px system-ui';const right=xi(k)>W-90;cx.textAlign=right?'right':'left';cx.fillText(lab,xi(k)+(right?-5:5),30);cx.textAlign='left';}}
+    cx.strokeStyle='#0b0b0b';cx.lineWidth=2;cx.beginPath();cx.moveTo(xi(i1),8);cx.lineTo(xi(i1),H-8);cx.stroke();
+    if(j<15){const nx=new Image();nx.src=S.frames[j+1].rp;}
+  }
+  $('#sEvent').onchange=()=>{$('#sRange').value=0;drawScrub()};$('#sRange').oninput=drawScrub;drawScrub();
+});
+</script>
+</body>
+</html>

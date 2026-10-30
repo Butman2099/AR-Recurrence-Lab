@@ -1,0 +1,26 @@
+const { chromium } = require('playwright');
+(async () => {
+  const browser = await chromium.launch({ args: ['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist'] });
+  const waitMV = async (page, sel) => { await page.waitForFunction((s)=>{const els=[...document.querySelectorAll(s)];return els.length && els.every(e=>e.loaded);}, sel, {timeout:60000}); };
+  let ctx = await browser.newContext({ viewport: { width: 412, height: 860 }, deviceScaleFactor: 2.5, isMobile: true, hasTouch: true });
+  let page = await ctx.newPage();
+  await page.goto('http://localhost:8765/index.html'); await page.waitForTimeout(400);
+  await page.selectOption('#gEvent','BT17');
+  await page.evaluate(()=>document.querySelectorAll('#gGrid model-viewer').forEach(m=>{m.loading='eager'; m.autoRotate=false;}));
+  await waitMV(page,'#gGrid model-viewer'); await page.waitForTimeout(1200);
+  const cards = await page.$$('#gGrid .card'); await cards[2].screenshot({path:'../figs/ar_shots/a_gallery_late.png'});
+  await cards[3].screenshot({path:'../figs/ar_shots/a_gallery_crash.png'});
+  await page.click('nav button[data-tab=tunnel]'); await page.selectOption('#tEvent','SP08'); await waitMV(page,'#tMV'); await page.waitForTimeout(1200);
+  await (await page.$('#tunnel .card')).screenshot({path:'../figs/ar_shots/b_tunnel.png'});
+  await page.click('nav button[data-tab=landscape]'); await waitMV(page,'#lMV'); await page.waitForTimeout(1200);
+  await (await page.$('#landscape .card')).screenshot({path:'../figs/ar_shots/c_landscape.png'});
+  await ctx.close();
+  ctx = await browser.newContext({ viewport: { width: 1000, height: 900 }, deviceScaleFactor: 2 });
+  page = await ctx.newPage();
+  await page.goto('http://localhost:8765/index.html'); await page.waitForTimeout(400);
+  await page.click('nav button[data-tab=scrub]'); await page.selectOption('#sEvent','BR20');
+  await page.evaluate(()=>{const r=document.querySelector('#sRange'); r.value=13; r.dispatchEvent(new Event('input'));});
+  await waitMV(page,'#sMV'); await page.waitForTimeout(1500);
+  await (await page.$('#scrub')).screenshot({path:'../figs/ar_shots/d_scrub.png'});
+  await browser.close();
+})();

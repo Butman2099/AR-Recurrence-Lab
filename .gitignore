@@ -1,0 +1,5 @@
+prices/
+__pycache__/
+*.pyc
+figs/*.png
+figs/*.pdf

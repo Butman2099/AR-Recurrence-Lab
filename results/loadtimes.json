@@ -1,0 +1,12 @@
+{
+ "desktop|models/SP08_late.glb": 0.392,
+ "desktop|models/BT17_late.glb": 0.313,
+ "desktop|models/SP08_tunnel.glb": 0.45,
+ "desktop|models/BT17_landscape.glb": 0.388,
+ "desktop|models/lorenz.glb": 0.342,
+ "mobile|models/SP08_late.glb": 2.107,
+ "mobile|models/BT17_late.glb": 2.272,
+ "mobile|models/SP08_tunnel.glb": 2.601,
+ "mobile|models/BT17_landscape.glb": 2.329,
+ "mobile|models/lorenz.glb": 2.807
+}
